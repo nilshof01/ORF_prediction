@@ -1,0 +1,3 @@
+pandas
+# for data processing
+pysam
