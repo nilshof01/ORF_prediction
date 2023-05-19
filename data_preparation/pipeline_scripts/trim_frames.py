@@ -4,18 +4,21 @@
 
 import pandas as pd
 from Bio import SeqIO
-from scipy.stats import truncnorm
+import numpy as np
 import sys
 import os.path
 
-fastq_file = str(sys.argv[0])
-lower = int(sys.argv[1])
-upper = int(sys.argv[2])
-id = str(sys.argv[3])
+fastq_file = str(sys.argv[1])
+lower = int(sys.argv[2])
+upper = int(sys.argv[3])
+id_ = str(sys.argv[4])
+save_path = str(sys.argv[5])
 
-sequences = pd.DataFrame(columns = ["sequence", "result", "id"])
+sequences = pd.DataFrame(columns=["sequence", "result", "id"])
 n = 0
-number_id =0
+number_id = 0
+lower = int(lower)
+upper = int(upper)
 with open(fastq_file, "r") as handle:
     # Use SeqIO.parse() to read the file as FASTQ records
     for record in SeqIO.parse(handle, "fastq"):
@@ -23,16 +26,17 @@ with open(fastq_file, "r") as handle:
         seq = str(record.seq)
         bin_ = record.id[-1]
 
-        data = {"sequence": seq, "result": bin_, "id":str(number_id)}
+        data = {"sequence": seq, "result": bin_, "id": str(number_id)}
         data = pd.DataFrame([data])
         sequences = pd.concat([sequences, data])
         # Process the data as needed
 
-        n =n + 1
+        n = n + 1
 
         if n == 6:
             n = 0
             number_id = number_id + 1
+
 
 # define function to slice sequences
 def trim_sequences(group):
@@ -40,21 +44,31 @@ def trim_sequences(group):
     group['Trimmed_Sequence'] = group['sequence'].apply(lambda x: x[:min_len])
     return group
 
-result = sequences.groupby('id').apply(trim_sequences)
 
 def get_truncated_normal_random_value(lower, upper, mean, std_dev):
-    distribution = truncnorm((lower - mean) / std_dev, (upper - mean) / std_dev, loc=mean, scale=std_dev)
-    return int(distribution.rvs(1))
+    value = int(np.random.normal(loc=mean, scale=std_dev))
+    return int(value)
+
 
 def trim_sequences_randomly(group, lower, upper, mean, std_dev):
     random_value = get_truncated_normal_random_value(lower, upper, mean, std_dev)
     min_len = min(random_value, min(len(seq) for seq in group['sequence']))
-    group['Trimmed_Sequence'] = group['sequence'].apply(lambda x: x[:min_len])
-    return group
+    trimmed_seqs = group['sequence'].apply(lambda x: x[:min_len])
+    return trimmed_seqs
 
-mean = (upper + lower) / 2
-std_dev = (upper - lower) / 4
 
-result = result.groupby('id').apply(lambda x: trim_sequences_randomly(x, lower, upper, mean, std_dev))
-result = result[["result", "Trimmed_Sequence", "id"]]
-result.to_csv(id + "_trimmed.csv", header = None)
+mean = abs((upper + lower) / 2)
+std_dev = abs((upper - lower) / 4)
+trimmed_seqs_all = pd.DataFrame([])
+for group_id, group in sequences.groupby('id'):
+    group = trim_sequences(group)
+    trimmed_seqs = trim_sequences_randomly(group, lower, upper, mean, std_dev)
+    trimmed_seqs_all = pd.concat([trimmed_seqs_all, trimmed_seqs])
+
+sequences["Trimmed_Sequence"] = trimmed_seqs_all
+
+save_full = os.path.join(save_path, id_ + "_trimmed.csv")
+print(save_full)
+sequences.to_csv(save_full, header=None)
+
+
