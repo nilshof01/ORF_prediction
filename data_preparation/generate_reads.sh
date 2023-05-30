@@ -85,7 +85,7 @@ for dir in $BASE_DIR/*/; do
         
     	$fragsim -n ${num_frags} -l ${length} ${input} > $temp_dir/frag_out.fa
 	$art_illumina -i ${temp_dir}/frag_out.fa --len ${length} -o ${temp_dir}/ --insRate 0 --insRate2 0 -dr 0 -dr2 0 --minQ 38 --seqSys HS25 --rcount 1 --paired --amplicon --noALN --quiet 
-    $leeHom --ancientdna -t 50 -fq1 "${temp_dir}/1.fq" -fq2 "$temp_dir/2.fq" -fqo $temp_dir/merge_read_out
+    	$leeHom --ancientdna -t 50 -fq1 "${temp_dir}/1.fq" -fq2 "$temp_dir/2.fq" -fqo $temp_dir/merge_read_out
 
 	$seqkit rmdup $temp_dir/merge_read_out.fq.gz > ${WORKING_DIR}/temp/rm_dups.fq 
 	python $fastqMatches ${temp_dir}/rm_dups.fq $gff_file
@@ -94,8 +94,8 @@ for dir in $BASE_DIR/*/; do
 
 	python $create_frames $WORKING_DIR/output_df.csv $temp_dir/rm_dups.fq ${WORKING_DIR}/results/ $ID
 	python $trim_frames ${WORKING_DIR}/results/$ID.fq $length $min_length $ID $WORKING_DIR/results/
-   gzip $input
-   gzip $cds_seq
+   	gzip $input
+   	gzip $cds_seq
 	rm -r ${WORKING_DIR}/results/*.fq
 	rm fq_interval_matches.csv
 	rm ref_gff.bed
