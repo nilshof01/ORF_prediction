@@ -63,8 +63,7 @@ def training(Net, optimizer, epochs, base_dir,batch_size, train_dir, training_na
             subset_Y = unzip_memory(Y[0])
             trainloader = create_dataset(subset_X, subset_Y, batch_size, mode = "train")	
             print("trainloader created")
-            os.remove(X[0][:-3])
-            os.remove(Y[0][:-3])
+
             del subset_X
             del subset_Y
             for data, target in trainloader:
@@ -110,11 +109,11 @@ def training(Net, optimizer, epochs, base_dir,batch_size, train_dir, training_na
 
         #    print(prof.key_averages().table(sort_by="cuda_time_total"))
 
-            optimizer.zero_grad() # releases ram 
-            train_precision.append(np.mean(np.array(train_precision_batches)))
-            train_loss_np = [loss.item() for loss in train_loss]
-            train_loss_mean = np.mean(np.array(train_loss_np))
-            mean_train_loss_all.append(train_loss_mean)
+        optimizer.zero_grad() # releases ram 
+        train_precision.append(np.mean(np.array(train_precision_batches)))
+        train_loss_np = [loss.item() for loss in train_loss]
+        train_loss_mean = np.mean(np.array(train_loss_np))
+        mean_train_loss_all.append(train_loss_mean)
         with torch.no_grad():
             Net.eval()
             for valid_file in range(int(len(validation_filenames)/2)):
@@ -123,8 +122,7 @@ def training(Net, optimizer, epochs, base_dir,batch_size, train_dir, training_na
                 subset_X = unzip_memory(X[0])
                 subset_Y = unzip_memory(Y[0])
                 validloader = create_dataset(subset_X, subset_Y, batch_size, mode = "val")	
-                os.remove(X[0][:-3])
-                os.remove(Y[0][:-3])
+
                 del subset_X
                 del subset_Y
                 for inputs, targets in validloader:

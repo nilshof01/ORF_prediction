@@ -12,14 +12,14 @@ import torch.nn.parallel
 import torch.distributed as dist
 import psutil
 from one_hot_encoding import create_chuncks
-
+import os
 
 
 test_model = False
 base_dir = "/work3/s220672/ORF_prediction"
-batch_size = 40
+batch_size = 120
 channels = 4 # a network with channel 1 showed far less good results: maybe because the numbers do not equalize the nucleotides which is problematic in kernel operations
-training_name = "3000frags_5000orgs_40bs_"
+training_name = "1000frag_10000orgs_70bs"
 limit = 6*700*5000
 LEARNING_RATE = 0.0001 # before 0.00001
 wDecay = 0.00005 # 0.005 could lead to too high regularization bc i could see that the model didnt not learn or was not flexible enough. the validation accuracies were about 10 % lower than training but a further factor to consider is that i didnt use dropout and my network was quiet big
@@ -27,12 +27,10 @@ epochs = 17
 train_optim = "ADAM"
 momentum = 0.95
 is_sparse = False
-if test_model:
-    train_dir = r"/zhome/20/8/175218/orf_prediction/processed/test"
+sequence_length = 30
 
-else:
-    train_dir = r"/work3/s220672/ORF_prediction/processed/1000frag_10000orgs"
-
+train_dir = "/work3/s220672/ORF_prediction/processed/1000frag_10000orgs"
+assert os.path.isdir(train_dir), "The training directory does not exist."
 
 assert torch.cuda.is_available(), ("The system could not connect with cuda. You will continue with cpu.")
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -40,17 +38,17 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
     
 Net = TheOneAndOnly(channels = channels,
                     test = test_model, 
-                    sequence_length = 30)
+                    sequence_length = sequence_length)
 
 
 
-out = Net(torch.randn(batch_size, 4, 6, 30, device="cpu"))
+out = Net(torch.randn(batch_size, 4, 6, sequence_length, device="cpu"))
 
 
 print("test_successful")
 Net = TheOneAndOnly(channels = channels,
                     test = test_model,
-                     sequence_length = 30)
+                     sequence_length = sequence_length)
 
 Net = Net.to(device)
 # Check if multiple GPUs are available
