@@ -1,5 +1,7 @@
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from line_eraser import EraseLines
 
 
 class Interchange(nn.Module):
@@ -21,7 +23,7 @@ class Interchange(nn.Module):
             nn.BatchNorm2d(last_channels_conv[0]),
             nn.ReLU(),
            # nn.
-            #nn.MaxAvg2d(kernel_size = (1, 3),
+            nn.MaxAvg2d(kernel_size = (1, 3),
              #            stride = 1,
               #           padding = (0, 1))
             
@@ -71,9 +73,9 @@ class Interchange(nn.Module):
             nn.BatchNorm2d(last_channels_conv[2]),
             nn.ReLU(),
             
-            nn.MaxPool2d(kernel_size = (1, 3),
-                         stride = (1, 3),
-                         padding = (0, 1))
+        #    nn.MaxPool2d(kernel_size = (1, 3),
+         #                stride = (1, 3),
+          #               padding = (0, 1))
         )
 
 

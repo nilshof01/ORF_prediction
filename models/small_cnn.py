@@ -5,21 +5,12 @@ from line_eraser import EraseLines
 
 
 class TheOneAndOnly(nn.Module):
-    def __init__(self,channels,test,   sequence_length = 30, first_channels_conv = [64, 256, 512, 180], last_channels_conv = [64, 256, 512,120, 240]): # horizontal kernel with horizontal stride
+    def __init__(self,channels,test,   sequence_length = 30, first_channels_conv = [64, 128, 256, 180], last_channels_conv = [64, 128, 256,120, 240]): # horizontal kernel with horizontal stride
         super(TheOneAndOnly, self).__init__()
-       # self.for_back_conv = nn.Sequential(
-        #    nn.Conv2d(            
-         #   in_channels = first_channels_conv[0],
-          #  out_channels = last_channels_conv[0],
-           # kernel_size = (3, 3),
-            #stride = 1),
-            #nn.BatchNorm2d(last_channels_conv[0]),
-            #nn.ReLU()
 
-    #    )
         self.test_model = test
         self.first_layer = nn.Sequential(
-            nn.Conv2d(in_channels = channels, # will be 20 because you will one hot encode the aminoacid so that you have 20 values on the z axis
+            nn.Conv2d(in_channels = channels,  
                       out_channels = last_channels_conv[0],
                       kernel_size = (1, 3),
                       stride = 1,
@@ -31,9 +22,9 @@ class TheOneAndOnly(nn.Module):
             nn.BatchNorm2d(last_channels_conv[0]),
             nn.ReLU(),
             nn.Dropout2d(0.2),
-            nn.MaxPool2d(kernel_size = (1, 3),
-                         stride = 1,
-                         padding = (0, 1))
+        #    nn.MaxPool2d(kernel_size = (1, 3),
+        #                 stride = 1,
+        #                 padding = (0, 1))
             
         ) # before that i have to normalize on length somehow
         self.second_conv = nn.Sequential(
@@ -48,9 +39,9 @@ class TheOneAndOnly(nn.Module):
             nn.BatchNorm2d(last_channels_conv[1]),
             nn.ReLU(),
             nn.Dropout2d(0.2), # have dropout after Relu ensures that you drop a few of the variety of values and not the raw values for the functions input
-            nn.MaxPool2d(kernel_size = (1, 3),
-                        stride = 1,
-                        padding = (0, 1)),
+      #      nn.MaxPool2d(kernel_size = (1, 3),
+       #                 stride = 1,
+       #                 padding = (0, 1)),
         ) # the idea between the previous and the following layer is that we can capture the duplet codon triplet bias for certain organisms. I used these two to prevent even kernel sizes which have no center point. But maybe the idea is bullshit
             ##vertical pooling to pick out the row with highest probability didnt work as initially thought
 
@@ -87,27 +78,23 @@ class TheOneAndOnly(nn.Module):
         input_dense = last_channels_conv[-1] * int(sequence_length/3) * 6
         
         self.dense_layer = nn.Sequential(
-            nn.Linear(30720, 5000), # training showed that number of neurons about 5000 are too low. About 30000 was better.
-            nn.BatchNorm1d(5000),
+            nn.Linear(15360, 1000), # training showed that number of neurons about 5000 are too low. About 30000 was better.
+            nn.BatchNorm1d(1000),
             nn.ReLU(),
             
         )
         ## maybe add normalization
         self.dense_layer2 = nn.Sequential(
-            nn.Linear(5000,500),
-            nn.BatchNorm1d(500),
+            nn.Linear(1000,100),
+            nn.BatchNorm1d(100),
             nn.ReLU()
         )
 
         self.dense_layer3 = nn.Sequential(
-            nn.Linear(500,50),
-            nn.BatchNorm1d(50),
-            nn.ReLU()
+            nn.Linear(100,6),
+  
         )
-        self.dense_layer4 = nn.Sequential(
-            nn.Linear(50, 6),
 
-        )
     def forward(self, x):
  #       x = self.for_back_conv(x)
         x = self.first_layer(x)
@@ -130,13 +117,11 @@ class TheOneAndOnly(nn.Module):
         x = x.view(-1, num_features)
 
         x = self.dense_layer(x)
-        
 
         x = self.dense_layer2(x)
 
         x = self.dense_layer3(x)
 
-        x = self.dense_layer4(x)
 
         x = F.softmax(x, dim=1) # relative the logits to each other
         return x

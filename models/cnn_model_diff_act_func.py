@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from experiment.line_eraser import EraseLines
+from line_eraser import EraseLines
 
 
 class TheOneAndOnly(nn.Module):

@@ -1,5 +1,7 @@
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from line_eraser import EraseLines
 
 
 class Simple(nn.Module):
