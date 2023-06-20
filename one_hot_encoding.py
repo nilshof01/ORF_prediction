@@ -125,7 +125,7 @@ def create_chuncks(train_data, results_train, val_data, val_results, channels, n
     
     
     
-create_chuncks(r"/work3/s220672/processed/6000frags_5000orgs/one_hot_blocks_all_6000frags_5000o.npy.gz", r"/work3/s220672/processed/6000frags_5000orgs/results_all_6000frags_5000o.npy.gz", r"/work3/s220672/processed/6000frags_5000orgs/one_hot_blocks_all_val_6000frags_5000o.npy.gz",r"/work3/s220672/processed/6000frags_5000orgs/results_all_val_6000frags_5000o.npy.gz", channels = 4)
+#create_chuncks(r"/work3/s220672/processed/6000frags_5000orgs/one_hot_blocks_all_6000frags_5000o.npy.gz", r"/work3/s220672/processed/6000frags_5000orgs/results_all_6000frags_5000o.npy.gz", r"/work3/s220672/processed/6000frags_5000orgs/one_hot_blocks_all_val_6000frags_5000o.npy.gz",r"/work3/s220672/processed/6000frags_5000orgs/results_all_val_6000frags_5000o.npy.gz", channels = 4)
     
     
 def create_dataset(X, Y, batch_size, mode):     

@@ -16,7 +16,7 @@ from one_hot_encoding import create_chuncks
 
 
 test_model = False
-base_dir = "/zhome/20/8/175218/orf_prediction"
+base_dir = "/work3/s220672/ORF_prediction"
 batch_size = 40
 channels = 4 # a network with channel 1 showed far less good results: maybe because the numbers do not equalize the nucleotides which is problematic in kernel operations
 training_name = "3000frags_5000orgs_40bs_"
@@ -28,10 +28,10 @@ train_optim = "ADAM"
 momentum = 0.95
 is_sparse = False
 if test_model:
-    train_data = r"/zhome/20/8/175218/orf_prediction/processed/test"
+    train_dir = r"/zhome/20/8/175218/orf_prediction/processed/test"
 
 else:
-    train_data = r"/zhome/20/8/175218/orf_prediction/processed/3000frags_5000orgs"
+    train_dir = r"/work3/s220672/ORF_prediction/processed/1000frag_10000orgs"
 
 
 assert torch.cuda.is_available(), ("The system could not connect with cuda. You will continue with cpu.")
@@ -83,7 +83,7 @@ if not test_model:
                                                                                   epochs,
                                                                                   base_dir,
                                                                                   batch_size,
-                                                                                  train_data,
+                                                                                  train_dir,
                                                                                   training_name)
     log_training_info(filename = "training_results",
                         training_loss = train_loss_mean,

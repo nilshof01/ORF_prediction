@@ -14,8 +14,10 @@
 #BSUB -M 22GB
 ### -- set walltime limit: hh:mm -- 
 #BSUB -W 10:00 
-### -- set the email address -- 
-##BSUB -u jobs.nilshof@outlook.de
+### -- set the email address --
+
+
+#BSUB -u jobs.nilshof@outlook.de
 ### -- send notification at start -- 
 #BSUB -B 
 ### -- send notification at completion -- 

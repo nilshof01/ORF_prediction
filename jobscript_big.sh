@@ -3,7 +3,7 @@
 ### –- specify queue --
 #BSUB -q gpua100
 ### -- set the job Name --
-#BSUB -J 3000frags_5000orgs_40bs_
+#BSUB -J 1000frags_10000orgs_40bs
 ### -- ask for number of cores (default: 1) --
 #BSUB -n 1
 ### -- Select the resources: 1 gpu in exclusive process mode --
@@ -22,8 +22,8 @@
 #BSUB -N
 ### -- Specify the output and error file. %J is the job-id --
 ### -- -o and -e mean append, -oo and -eo mean overwrite --
-#BSUB -o output_scripts/3000frags_5000orgs_40bs_.out
-#BSUB -e error_scripts/3000frags_5000orgs_40bs_.err
+#BSUB -o job_output/1000frags_10000orgs_40bs.out
+#BSUB -e job_output/1000frags_10000orgs_40bs.err
 # -- end of LSF options --
 
 #module load python3/3.6.2
@@ -40,4 +40,4 @@ module load numpy/1.18.1-python-3.8.1-openblas-0.3.7
 module load pandas/1.0.3-python-3.8.1
 
 
-python3 /zhome/20/8/175218/orf_prediction/training.py
+python3 /work3/s220672/ORF_prediction/training.py

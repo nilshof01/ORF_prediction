@@ -62,9 +62,11 @@ def training(Net, optimizer, epochs, base_dir,batch_size, train_dir, training_na
             subset_X = unzip_memory(X[0])
             subset_Y = unzip_memory(Y[0])
             trainloader = create_dataset(subset_X, subset_Y, batch_size, mode = "train")	
+            print("trainloader created")
             os.remove(X[0][:-3])
             os.remove(Y[0][:-3])
-
+            del subset_X
+            del subset_Y
             for data, target in trainloader:
                 ram_usage = psutil.Process().memory_info().rss / 1024 ** 2  # RAM usage in MB
                 print(f"RAM usage epoch {e:.1f} beginning: {ram_usage:.2f} MB")
@@ -123,6 +125,8 @@ def training(Net, optimizer, epochs, base_dir,batch_size, train_dir, training_na
                 validloader = create_dataset(subset_X, subset_Y, batch_size, mode = "val")	
                 os.remove(X[0][:-3])
                 os.remove(Y[0][:-3])
+                del subset_X
+                del subset_Y
                 for inputs, targets in validloader:
                     inputs = inputs.to(torch.device("cuda"))
                     targets = targets.to(torch.device("cuda"))
