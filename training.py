@@ -17,19 +17,21 @@ import os
 
 test_model = False
 base_dir = "/work3/s220672/ORF_prediction"
-batch_size = 120
+batch_size = 90
 channels = 4 # a network with channel 1 showed far less good results: maybe because the numbers do not equalize the nucleotides which is problematic in kernel operations
-training_name = "1000frag_10000orgs_70bs"
+training_name = "6000frags_2000orgs_36nt_095_099"
 limit = 6*700*5000
-LEARNING_RATE = 0.0001 # before 0.00001
-wDecay = 0.00005 # 0.005 could lead to too high regularization bc i could see that the model didnt not learn or was not flexible enough. the validation accuracies were about 10 % lower than training but a further factor to consider is that i didnt use dropout and my network was quiet big
-epochs = 17 
+LEARNING_RATE = 0.000001 # before 0.00001
+wDecay = 0.00001 # 0.005 could lead to too high regularization bc i could see that the model didnt not learn or was not flexible enough. the validation accuracies were about 10 % lower than training but a further factor to consider is that i didnt use dropout and my network was quiet big
+epochs = 25
 train_optim = "ADAM"
 momentum = 0.95
 is_sparse = False
 sequence_length = 30
+adam_beta1 = 0.95 #high value or close to 1 means that it adapts quickly to recent gradients. But this can make it very sensitive to noisy data
+adam_beta2 = 0.99 # high value or close to 1 means that it adapts quickly to recent squared gradients. But this can make it very sensitive to noisy data
 
-train_dir = "/work3/s220672/ORF_prediction/processed/1000frag_10000orgs"
+train_dir = "/work3/s220672/ORF_prediction/processed/1000frag_5000orgs"
 assert os.path.isdir(train_dir), "The training directory does not exist."
 
 assert torch.cuda.is_available(), ("The system could not connect with cuda. You will continue with cpu.")
@@ -68,8 +70,14 @@ if train_optim == "SGD":
 if train_optim=="ADAM":
     optimizer = optim.Adam(Net.parameters(),
                         lr=LEARNING_RATE,
+                        betas = [adam_beta1, adam_beta2], # default values are 0.9 and 0.999
                          weight_decay=wDecay,)
-
+if train_optim=="ADADELTA":
+    optimizer = optim.Adadelta(Net.parameters(),
+                        lr=LEARNING_RATE,
+                        rho=0.95,
+                        eps=1e-08,
+                         weight_decay=wDecay,)
 
 ram_usage = psutil.Process().memory_info().rss / 1024 ** 2  # RAM usage in MB
 print(f"RAM usage before training: {ram_usage:.2f} MB")

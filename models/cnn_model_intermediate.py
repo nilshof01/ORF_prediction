@@ -5,7 +5,7 @@ from line_eraser import EraseLines
 
 
 class TheOneAndOnly(nn.Module):
-    def __init__(self,channels,test,   sequence_length = 30, first_channels_conv = [64, 128, 256, 180], last_channels_conv = [64, 128, 256,120, 240]): # horizontal kernel with horizontal stride
+    def __init__(self,channels,test,   sequence_length = 30, first_channels_conv = [40, 160, 280, 180], last_channels_conv = [64, 128, 256,120, 240]): # horizontal kernel with horizontal stride
         super(TheOneAndOnly, self).__init__()
 
         self.test_model = test
@@ -49,9 +49,9 @@ class TheOneAndOnly(nn.Module):
             nn.Conv2d(
                     in_channels = first_channels_conv[1],
                     out_channels = last_channels_conv[2],
-                    kernel_size = (1, 7),
+                    kernel_size = (1, 3),
                 	stride = 1,
-                    padding = (0, 3)),
+                    padding = (0, 1)),
             nn.BatchNorm2d(last_channels_conv[2]),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size = (1, 3),

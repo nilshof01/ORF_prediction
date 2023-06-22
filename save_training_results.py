@@ -10,7 +10,7 @@ def log_training_info(filename, training_loss, training_accuracy, validation_los
     #validation_loss = validation_loss.tolist()
     # If the file already exists, read the existing data
     if os.path.isfile(filename):
-        df = pd.read_csv(filename, header = True)
+        df = pd.read_csv(filename)
 
     list_len = len(training_loss)
     print(validation_accuracy)

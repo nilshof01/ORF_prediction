@@ -5,7 +5,7 @@ from line_eraser import EraseLines
 
 
 class TheOneAndOnly(nn.Module):
-    def __init__(self,channels,test,   sequence_length = 30, first_channels_conv = [64, 256, 512, 180], last_channels_conv = [64, 256, 512,120, 240]): # horizontal kernel with horizontal stride
+    def __init__(self,channels,test,   sequence_length = 30, first_channels_conv = [64, 164, 284, 180], last_channels_conv = [64, 164, 284,120, 240]): # horizontal kernel with horizontal stride
         super(TheOneAndOnly, self).__init__()
        # self.for_back_conv = nn.Sequential(
         #    nn.Conv2d(            
@@ -85,22 +85,22 @@ class TheOneAndOnly(nn.Module):
         #num_filters = 64
         #num_units = num_filters * output_height * output_width
         input_dense = last_channels_conv[-1] * int(sequence_length/3) * 6
-        
+        flatten_input_size = int(last_channels_conv[2] * 6 * sequence_length/3) 
         self.dense_layer = nn.Sequential(
-            nn.Linear(30720, 5000), # training showed that number of neurons about 5000 are too low. About 30000 was better.
+            nn.Linear(flatten_input_size, 2000), # training showed that number of neurons about 5000 are too low. About 30000 was better.
             nn.BatchNorm1d(5000),
             nn.ReLU(),
             
         )
         ## maybe add normalization
         self.dense_layer2 = nn.Sequential(
-            nn.Linear(5000,500),
-            nn.BatchNorm1d(500),
+            nn.Linear(2000,200),
+            nn.BatchNorm1d(200),
             nn.ReLU()
         )
 
         self.dense_layer3 = nn.Sequential(
-            nn.Linear(500,50),
+            nn.Linear(200,50),
             nn.BatchNorm1d(50),
             nn.ReLU()
         )
