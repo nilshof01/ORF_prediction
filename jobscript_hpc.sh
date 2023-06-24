@@ -3,7 +3,7 @@
 ### -- specify queue -- 
 #BSUB -q hpc
 ### -- set the job Name -- 
-#BSUB -J chunker_36
+#BSUB -J chunker_30_
 ### -- ask for number of cores (default: 1) -- 
 #BSUB -n 1
 ### -- specify that the cores must be on the same host -- 
@@ -24,8 +24,8 @@
 #BSUB -N 
 ### -- Specify the output and error file. %J is the job-id -- 
 ### -- -o and -e mean append, -oo and -eo mean overwrite -- 
-#BSUB -o job_output/chunker_36.out 
-#BSUB -e job_output/chunker_36.err 
+#BSUB -o job_output/chunker_30_.out 
+#BSUB -e job_output/chunker_30_.err 
 
 
 

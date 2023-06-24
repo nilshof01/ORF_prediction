@@ -5,7 +5,7 @@ from line_eraser import EraseLines
 
 
 class TheOneAndOnly(nn.Module):
-    def __init__(self,channels,test,   sequence_length = 30, first_channels_conv = [40, 160, 280, 180], last_channels_conv = [64, 128, 256,120, 240]): # horizontal kernel with horizontal stride
+    def __init__(self,channels,test,   sequence_length = 30, first_channels_conv = [64, 164, 256, 180], last_channels_conv = [64, 164, 256,120, 240]): # horizontal kernel with horizontal stride
         super(TheOneAndOnly, self).__init__()
 
         self.test_model = test
@@ -49,13 +49,13 @@ class TheOneAndOnly(nn.Module):
             nn.Conv2d(
                     in_channels = first_channels_conv[1],
                     out_channels = last_channels_conv[2],
-                    kernel_size = (1, 3),
+                    kernel_size = (1, 7),
                 	stride = 1,
-                    padding = (0, 1)),
+                    padding = (0, 3)),
             nn.BatchNorm2d(last_channels_conv[2]),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size = (1, 3),
-                         stride = (1, 3),
+                         stride = 1,
                          padding = (0, 1)),
             nn.Dropout2d(0.3), # dropout after pooling prevents overfitting in dense layers, if you put it before maxpool you randomly set values to 0 which can irritate the maxpool
         )
@@ -76,23 +76,28 @@ class TheOneAndOnly(nn.Module):
         #num_filters = 64
         #num_units = num_filters * output_height * output_width
 
-        flatten_input_size = int(last_channels_conv[2] * 6 * sequence_length/3) #only if max pool true
+        flatten_input_size = int(last_channels_conv[2] * 6 * sequence_length) #only if max pool true
         self.dense_layer = nn.Sequential(
-            nn.Linear(flatten_input_size, 1000), # training showed that number of neurons about 5000 are too low. About 30000 was better.
-            nn.BatchNorm1d(1000),
+            nn.Linear(flatten_input_size, 5000), # training showed that number of neurons about 5000 are too low. About 30000 was better.
+            nn.BatchNorm1d(5000),
             nn.ReLU(),
             
         )
         ## maybe add normalization
         self.dense_layer2 = nn.Sequential(
-            nn.Linear(1000,100),
-            nn.BatchNorm1d(100),
+            nn.Linear(5000,700),
+            nn.BatchNorm1d(700),
             nn.ReLU()
         )
 
         self.dense_layer3 = nn.Sequential(
-            nn.Linear(100,6),
-  
+            nn.Linear(700,70),
+            nn.BatchNorm1d(70),
+            nn.ReLU()
+        )
+        
+        self.dense_layer4 = nn.Sequential(
+            nn.Linear(70, 6)
         )
 
     def forward(self, x):
@@ -122,6 +127,7 @@ class TheOneAndOnly(nn.Module):
 
         x = self.dense_layer3(x)
 
+        x = self.dense_layer4(x)
 
         x = F.softmax(x, dim=1) # relative the logits to each other
         return x

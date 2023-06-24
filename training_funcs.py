@@ -72,63 +72,63 @@ def training(Net, optimizer, epochs, base_dir,batch_size, train_dir, training_na
             Y = [string for string in train_filenames if "subset_" + str(train_file + 1) + "_Y" in string]
       #      if not os.path.isfile(X[0]) or not os.path.isfile(Y[0]):
        #         print("The training data file does not exist.")
-            print(X[0])
-            break
-            subset_X = unzip_memory(X[0])
-            subset_Y = unzip_memory(Y[0])
-            
-            trainloader = create_dataset(subset_X, subset_Y, batch_size, mode = "train")	
-            print("trainloader created")
 
-            del subset_X
-            del subset_Y
-            for data, target in trainloader: # mini batch gradient descent
-                #ram_usage = psutil.Process().memory_info().rss / 1024 ** 2  # RAM usage in MB
-                #print(f"RAM usage epoch {e:.1f} beginning: {ram_usage:.2f} MB")
-                break
-                if torch.cuda.is_available():
-                    data = data.to(torch.device("cuda"))
-                    target = target.to(torch.device("cuda"))
-                    data = data.float()
-                    target = target.float()
-                    # data, target = data.cuda(), target.cuda()
-                else:
-                    print("device not assigned")
-                optimizer.zero_grad() # releases ram 
-
-                with torch.autograd.profiler.profile(enabled=(os.environ.get("CUDA_PROFILE") == "1")) as prof:
-                    prediction = Net(data)
-                # backward pass
-                # predicted values should be percentage values because loss function needs predicted probabilities
-                loss = criterion(prediction, target)
+            if os.path.isfile(X[0]) and os.path.isfile(Y[0]):
+                subset_X = unzip_memory(X[0])
+                subset_Y = unzip_memory(Y[0])
                 
-                predicted_labels = torch.argmax(prediction, dim=1)
-                target_labels = torch.argmax(target, dim=1)
-                correct_predictions = (predicted_labels == target_labels).sum().item()
-                total_predictions = target_labels.shape[0]
-                precision = correct_predictions/total_predictions
+                trainloader = create_dataset(subset_X, subset_Y, batch_size, mode = "train")	
+                print("trainloader created")
 
-                #   loss.requires_grad = True
-                # calculate gradients
+                del subset_X
+                del subset_Y
+                for data, target in trainloader: # mini batch gradient descent
+                    #ram_usage = psutil.Process().memory_info().rss / 1024 ** 2  # RAM usage in MB
+                    #print(f"RAM usage epoch {e:.1f} beginning: {ram_usage:.2f} MB")
+                    
+                    if torch.cuda.is_available():
+                        data = data.to(torch.device("cuda"))
+                        target = target.to(torch.device("cuda"))
+                        data = data.float()
+                        target = target.float()
+                        # data, target = data.cuda(), target.cuda()
+                    else:
+                        print("device not assigned")
+                    optimizer.zero_grad() # releases ram 
 
-                loss.backward()
+                    with torch.autograd.profiler.profile(enabled=(os.environ.get("CUDA_PROFILE") == "1")) as prof:
+                        prediction = Net(data)
+                    # backward pass
+                    # predicted values should be percentage values because loss function needs predicted probabilities
+                    loss = criterion(prediction, target)
+                    
+                    predicted_labels = torch.argmax(prediction, dim=1)
+                    target_labels = torch.argmax(target, dim=1)
+                    correct_predictions = (predicted_labels == target_labels).sum().item()
+                    total_predictions = target_labels.shape[0]
+                    precision = correct_predictions/total_predictions
 
-                optimizer.step()
-                train_loss.append(loss)
-                step = + 1
-                n_totalT += 1
-                predictions = prediction.max(1)[1]
-                train_precision_batches.append(precision)
-                if e==(epochs-1):
-            #      print(prediction)
-                #    print(target)
-                    pass
-                del data
-                del target
-                max_ram_usage, position = check_max_ram(max_ram_usage, 3)
-                
-        #    print(prof.key_averages().table(sort_by="cuda_time_total"))
-            del trainloader
+                    #   loss.requires_grad = True
+                    # calculate gradients
+
+                    loss.backward()
+
+                    optimizer.step()
+                    train_loss.append(loss)
+                    step = + 1
+                    n_totalT += 1
+                    predictions = prediction.max(1)[1]
+                    train_precision_batches.append(precision)
+                    if e==(epochs-1):
+                #      print(prediction)
+                    #    print(target)
+                        pass
+                    del data
+                    del target
+                    max_ram_usage, position = check_max_ram(max_ram_usage, 3)
+                    
+            #    print(prof.key_averages().table(sort_by="cuda_time_total"))
+                del trainloader
         max_ram_usage, position = check_max_ram(max_ram_usage,4)
         optimizer.zero_grad() # releases ram 
         train_precision.append(np.mean(np.array(train_precision_batches)))

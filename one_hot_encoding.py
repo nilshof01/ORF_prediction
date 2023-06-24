@@ -27,7 +27,7 @@ def gunzip_file(file_path):
     subprocess.run(['gunzip', file_path])
     
 def zip_file(file_path):
-    subprocess.run(['gzip', file_path])
+    subprocess.run(['gzip',"f", file_path])
     
 
 
