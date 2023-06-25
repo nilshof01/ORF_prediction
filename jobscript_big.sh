@@ -3,13 +3,13 @@
 ### –- specify queue --
 #BSUB -q gpua100
 ### -- set the job Name --
-#BSUB -J 6000frags_2000orgs_30nt_small
+#BSUB -J 1000frags_5000orgs_30nt_small_final
 ### -- ask for number of cores (default: 1) --
 #BSUB -n 1
 ### -- Select the resources: 1 gpu in exclusive process mode --
 #BSUB -gpu "num=1:mode=exclusive_process"
 ### -- set walltime limit: hh:mm --  maximum 24 hours for GPU-queues right now
-#BSUB -W 6:00
+#BSUB -W 5:00
 # request 5GB of system-memory
 #BSUB -R "rusage[mem=55GB]"
 ### -- set the email address --
@@ -22,8 +22,8 @@
 #BSUB -N
 ### -- Specify the output and error file. %J is the job-id --
 ### -- -o and -e mean append, -oo and -eo mean overwrite --
-#BSUB -o job_output/6000frags_2000orgs_30nt_small.out
-#BSUB -e job_output/6000frags_2000orgs_30nt_small.err
+#BSUB -o job_output/1000frags_5000orgs_30nt_small_final.out
+#BSUB -e job_output/1000frags_5000orgs_30nt_small_final.err
 # -- end of LSF options --
 
 #module load python3/3.6.2

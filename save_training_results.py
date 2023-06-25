@@ -3,7 +3,7 @@ import os
 
 
 def log_training_info(filename, training_loss, training_accuracy, validation_loss, validation_accuracy, epoch_number,
-                      learning_rate_value, weight_decay_value, batch_size_value, data_input):
+                      learning_rate_value, weight_decay_value,beta1, beta2, batch_size_value, data_input):
     # Create an empty DataFrame
     df = pd.DataFrame()
    # training_loss = training_loss.tolist()
@@ -26,6 +26,8 @@ def log_training_info(filename, training_loss, training_accuracy, validation_los
         'Validation Accuracy': validation_accuracy,
         'Learning Rate': [learning_rate_value] * list_len,
         'Weight Decay': [weight_decay_value] * list_len,
+        "beta1": [beta1] * list_len,
+        "beta2": [beta2] * list_len,
         'Batch Size': [batch_size_value] * list_len,
         'Data Input': [data_input] * list_len
     }
