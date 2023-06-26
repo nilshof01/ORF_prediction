@@ -18,21 +18,21 @@ import os
 
 test_model = False
 base_dir = "/work3/s220672/ORF_prediction"
-batch_size = 110
+batch_size = 50
 channels = 4 # a network with channel 1 showed far less good results: maybe because the numbers do not equalize the nucleotides which is problematic in kernel operations
-training_name = "1000frags_5000orgs_30nt_small_final"
+training_name = "6000frags_2000orgs_30nt_50"
 limit = 6*700*5000
 LEARNING_RATE = 0.000001 # before 0.00001
 wDecay = 0.00001 # 0.005 could lead to too high regularization bc i could see that the model didnt not learn or was not flexible enough. the validation accuracies were about 10 % lower than training but a further factor to consider is that i didnt use dropout and my network was quiet big
-epochs = 25
+epochs = 35
 train_optim = "ADAM"
 momentum = 0.95
 is_sparse = False
 sequence_length = 30
-adam_beta1 = 0.6 #high value or close to 1 means that it adapts quickly to recent gradients. But this can make it very sensitive to noisy data
+adam_beta1 = 0.95 #high value or close to 1 means that it adapts quickly to recent gradients. But this can make it very sensitive to noisy data
 adam_beta2 = 0.99 # high value or close to 1 means that it adapts quickly to recent squared gradients. But this can make it very sensitive to noisy data
 
-train_dir = "/work3/s220672/ORF_prediction/processed/1000frag_5000orgs"
+train_dir = "/work3/s220672/ORF_prediction/processed/6000frags_2000orgs_30nt"
 assert os.path.isdir(train_dir), "The training directory does not exist."
 
 assert torch.cuda.is_available(), ("The system could not connect with cuda. You will continue with cpu.")
