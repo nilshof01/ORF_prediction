@@ -22,6 +22,10 @@ import torch.autograd.profiler as profiler
 from torch.cuda.amp import autocast, GradScaler
 import glob
 
+def calc_threshold(total_predictions, max_probabilities, correct_predictions, threshold = 0.5):
+    correct_with_threshold = (correct_predictions & (max_probabilities >= threshold)).sum().item()
+    percentage_correct_with_threshold = (correct_with_threshold / total_predictions) * 100
+    return percentage_correct_with_threshold
 
 
 def unzip_memory(file):
@@ -40,7 +44,7 @@ def check_max_ram(max_ram_usage, position):
         position = position
     return max_ram_usage, position
     
-def training(Net, optimizer, epochs, base_dir,batch_size, train_dir, training_name):
+def training(Net, optimizer, epochs, base_dir,batch_size, train_dir, training_name,save_model, save_path):
     max_ram_usage = 0
     criterion = nn.CrossEntropyLoss() # not binary cross entropy loss. You do not have binary cross entropy because you have a multi class problem. multi class = 6 different open reading frames. Thats why you cannot classify with binary cross entropy.
     step = 0
@@ -103,8 +107,13 @@ def training(Net, optimizer, epochs, base_dir,batch_size, train_dir, training_na
                     loss = criterion(prediction, target)
                     
                     predicted_labels = torch.argmax(prediction, dim=1)
+                    #max_probabilities = torch.max(prediction, dim=1).values
                     target_labels = torch.argmax(target, dim=1)
+                    #total_predictions = len(predicted_labels)
                     correct_predictions = (predicted_labels == target_labels).sum().item()
+                    #percentage_correct_05 = calc_threshold(total_predictions, max_probabilities, correct_predictions, threshold = 0.5)
+                    
+                   # print(percentage_correct_05)
                     total_predictions = target_labels.shape[0]
                     precision = correct_predictions/total_predictions
 
@@ -159,7 +168,10 @@ def training(Net, optimizer, epochs, base_dir,batch_size, train_dir, training_na
                     loss = criterion(output, targets)
                     predicted_labels = torch.argmax(output, dim=1)
                     target_labels = torch.argmax(targets, dim=1)
+                    predicted_labels = torch.max(output, dim=1)
+                    
                     correct_predictions_val = (predicted_labels == target_labels).sum().item()
+
                     total_predictions = target_labels.shape[0]
                     valid_loss.append(loss)
                     precision = correct_predictions_val/total_predictions
@@ -187,11 +199,13 @@ def training(Net, optimizer, epochs, base_dir,batch_size, train_dir, training_na
                 f'Epoch {e + 1} \t\t Training Loss: {train_loss_mean} \t\t Validation Loss: {valid_loss_mean}')
             print(
                 f'Epoch {e + 1} \t\t Train Precision: {np.mean(np.array(train_precision_batches))} \t\t Validation Precision: {np.mean(np.array(valid_precision_batches))}')
-        #  if min_valid_loss > valid_loss:
-        #     print(f'Validation Loss Decreased({min_valid_loss:.6f}--->{valid_loss:.6f}) \t Saving The Model')
-            #    min_valid_loss = valid_loss
-            #   # Saving State Dict
-            #  torch.save(Net.state_dict(), 'saved_model.pth')
+            if save_model:
+                if min_valid_loss > valid_loss:
+                    print(f'Validation Loss Decreased({min_valid_loss:.6f}--->{valid_loss:.6f}) \t Saving The Model')
+                    min_valid_loss = valid_loss
+                # Saving State Dict
+                    save_path = save_path + "/" + training_name + ".pth"
+                    torch.save(Net.state_dict(), save_path)
 
         #model = torch.load("/zhome/20/8/175218/saved_model.pth")
             ram_usage = psutil.Process().memory_info().rss / 1024 ** 2  # RAM usage in MB

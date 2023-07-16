@@ -8,7 +8,7 @@ import torch.optim as optim
 from save_training_results import log_training_info
 #from models.cnn_model import TheOneAndOnly
 from models.small_cnn import TheOneAndOnly
-#from models.cnn_model_intermediate import TheOneAndOnly
+
 import torch.nn.parallel
 import torch.distributed as dist
 import psutil
@@ -17,22 +17,25 @@ import os
 
 
 test_model = False
+save_model = True
+save_path_model = "/zhome/20/8/175218/orf_prediction/models"
 base_dir = "/work3/s220672/ORF_prediction"
-batch_size = 50
+train_dir = "/work3/s220672/ORF_prediction/processed/8000frag_2000orgs_30nt"
+batch_size = 65
 channels = 4 # a network with channel 1 showed far less good results: maybe because the numbers do not equalize the nucleotides which is problematic in kernel operations
-training_name = "6000frags_2000orgs_30nt_50"
+training_name = "nodam_30nt"
 limit = 6*700*5000
 LEARNING_RATE = 0.000001 # before 0.00001
 wDecay = 0.00001 # 0.005 could lead to too high regularization bc i could see that the model didnt not learn or was not flexible enough. the validation accuracies were about 10 % lower than training but a further factor to consider is that i didnt use dropout and my network was quiet big
-epochs = 35
+epochs = 45 # 45
 train_optim = "ADAM"
 momentum = 0.95
 is_sparse = False
 sequence_length = 30
-adam_beta1 = 0.95 #high value or close to 1 means that it adapts quickly to recent gradients. But this can make it very sensitive to noisy data
+adam_beta1 = 0.8 #high value or close to 1 means that it adapts quickly to recent gradients. But this can make it very sensitive to noisy data
 adam_beta2 = 0.99 # high value or close to 1 means that it adapts quickly to recent squared gradients. But this can make it very sensitive to noisy data
 
-train_dir = "/work3/s220672/ORF_prediction/processed/6000frags_2000orgs_30nt"
+
 assert os.path.isdir(train_dir), "The training directory does not exist."
 
 assert torch.cuda.is_available(), ("The system could not connect with cuda. You will continue with cpu.")
@@ -91,7 +94,10 @@ if not test_model:
                                                                                   base_dir,
                                                                                   batch_size,
                                                                                   train_dir,
-                                                                                  training_name)
+                                                                                  training_name,
+                                                                                  save_model,
+                                                                                  save_path_model
+                                                                                  )
     log_training_info(filename = "training_results",
                         training_loss = train_loss_mean,
                         training_accuracy = train_precision,
