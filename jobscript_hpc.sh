@@ -37,4 +37,4 @@ module load numpy/1.18.1-python-3.8.1-openblas-0.3.7
 module load pandas/1.0.3-python-3.8.1
 
 # here follow the commands you want to execute with input.in as the input file
-python3 /work3/s220672/ORF_prediction/chunck_script.py
+python3 /work3/s220672/ORF_prediction/data_preparation/chunck_script.py

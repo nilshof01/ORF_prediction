@@ -12,7 +12,6 @@ from models.small_cnn import TheOneAndOnly
 import torch.nn.parallel
 import torch.distributed as dist
 import psutil
-from one_hot_encoding import create_chuncks
 import os
 
 

@@ -1,4 +1,4 @@
-from one_hot_encoding import create_chuncks
+from data_preparation.one_hot_encoding import create_chuncks
 
 train_data = r"/work3/s220672/ORF_prediction/processed/8000frag_2000orgs_30nt_middam/one_hot_blocks_all_8000frag_2000orgs_30nt_middam.npy.gz"
 results_train = r"/work3/s220672/ORF_prediction/processed/8000frag_2000orgs_30nt_middam/results_all_8000frag_2000orgs_30nt_middam.npy.gz"

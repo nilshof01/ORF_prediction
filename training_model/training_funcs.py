@@ -3,16 +3,9 @@ import numpy as np
 import torch
 from torch import nn
 import torch.optim as optim
-#from cnn_model_diff_act_func import TheOneAndOnly
-from models.cnn_model import TheOneAndOnly
-from one_hot_encoding import create_dataset
+from data_preparation.one_hot_encoding import create_dataset
 import sys
-from decode import decode_sequence
-from models.simple_model import Simple
-#from models.interchange_model import Interchange
-from save_training_results import log_training_info
 import os
-import re
 #import scipy.sparse as sp
 import subprocess
 import gzip
@@ -168,7 +161,6 @@ def training(Net, optimizer, epochs, base_dir,batch_size, train_dir, training_na
                     loss = criterion(output, targets)
                     predicted_labels = torch.argmax(output, dim=1)
                     target_labels = torch.argmax(targets, dim=1)
-                    predicted_labels = torch.max(output, dim=1)
                     
                     correct_predictions_val = (predicted_labels == target_labels).sum().item()
 

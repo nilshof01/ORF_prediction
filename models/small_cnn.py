@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from line_eraser import EraseLines
+from training_model.line_eraser import EraseColumns
 
 
 class TheOneAndOnly(nn.Module):
@@ -18,7 +18,7 @@ class TheOneAndOnly(nn.Module):
                       padding_mode="zeros"
                       ),
       
-        #    EraseLines(p = 0.2, L = 2),
+            #EraseColumns(),
             nn.BatchNorm2d(last_channels_conv[0]),
             nn.ReLU(),
             nn.Dropout2d(0.2),
@@ -34,7 +34,7 @@ class TheOneAndOnly(nn.Module):
                      stride = 1,
                       padding = (0, 2),
                       ),
-            EraseLines(p = 0.2, L = 2),
+          #  EraseLines(p = 0.2, L = 2),
             
             nn.BatchNorm2d(last_channels_conv[1]),
             nn.ReLU(),
