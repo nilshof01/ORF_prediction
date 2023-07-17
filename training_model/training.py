@@ -1,4 +1,4 @@
-from training_funcs import training
+from training_model.training_funcs import training
 import torch
 import numpy as np
 import torch

@@ -42,4 +42,4 @@ Loaded module: numpy/1.18.2-python-3.8.2-openblas-0.3.9
 Loaded module: pandas/1.0.3-python-3.8.2
 Loaded module: scipy/1.4.1-python-3.8.2
 
-python3 /work3/s220672/ORF_prediction/training.py
+python3 /work3/s220672/ORF_prediction/training_model/training.py

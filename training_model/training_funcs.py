@@ -44,6 +44,7 @@ def training(Net, optimizer, epochs, base_dir,batch_size, train_dir, training_na
     valid_precision = []
     train_precision = []
     mean_val_loss_all = []
+    min_valid_loss= np.inf
     mean_train_loss_all = []
     train_filenames =[file for file in glob.glob(os.path.join(train_dir, "*")) if not "val" in file]
     print(train_filenames)
