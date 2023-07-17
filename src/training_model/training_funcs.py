@@ -3,7 +3,8 @@ import numpy as np
 import torch
 from torch import nn
 import torch.optim as optim
-from data_preparation.one_hot_encoding import create_dataset
+from .one_hot_encoding import create_dataset
+
 import sys
 import os
 #import scipy.sparse as sp

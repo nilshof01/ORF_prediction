@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from training_model.line_eraser import EraseColumns
+from .line_eraser import EraseColumns
 
 
 class TheOneAndOnly(nn.Module):

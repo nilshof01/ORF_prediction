@@ -36,5 +36,13 @@ module swap ffmpeg/4.2.2
 module load numpy/1.18.1-python-3.8.1-openblas-0.3.7 
 module load pandas/1.0.3-python-3.8.1
 
+
+train_data="/work3/s220672/ORF_prediction/processed/8000frag_2000orgs_30nt_middam/one_hot_blocks_all_8000frag_2000orgs_30nt_middam.npy.gz"
+results_train="/work3/s220672/ORF_prediction/processed/8000frag_2000orgs_30nt_middam/results_all_8000frag_2000orgs_30nt_middam.npy.gz"
+val_data="/work3/s220672/ORF_prediction/processed/8000frag_2000orgs_30nt_middam/one_hot_blocks_all_val_8000frag_2000orgs_30nt_middam.npy.gz"
+val_results="/work3/s220672/ORF_prediction/processed/8000frag_2000orgs_30nt_middam/results_all_val_8000frag_2000orgs_30nt_middam.npy.gz"
+num_subset=20
+
+
 # here follow the commands you want to execute with input.in as the input file
-python3 /work3/s220672/ORF_prediction/data_preparation/chunck_script.py
+python3 -m src.data_preparation.chunck_processing $train_data $results_train $val_data $val_results $num_subset

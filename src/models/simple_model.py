@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from training_model.line_eraser import EraseLines
+from models.line_eraser import EraseLines
 
 
 class Simple(nn.Module):

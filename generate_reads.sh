@@ -2,7 +2,7 @@
 #!/bin/bash
 
 # Define the base directory where you want to search for files
-WORKING_DIR="/home/people/s220672/ReadsMatchProtein"
+WORKING_DIR=$(PWD)
 BASE_DIR="/home/databases/refseq_bac/refseq/bacteria"
 num_frags=6000
 length=33
@@ -12,10 +12,10 @@ fragsim="/home/ctools/gargammel/src/fragSim"
 art_illumina="/home/ctools/gargammel/art_src_MountRainier_Linux/art_illumina"
 leeHom="/home/ctools/leeHom-1.2.15/src/leeHom"
 seqkit="/home/ctools/seqkit-2.2.0/seqkit"
-fastqMatches="$WORKING_DIR/pipeline_scripts/FastqMatches.py"
-fastq_ORF="$WORKING_DIR/pipeline_scripts/FastqORF.py"
-create_frames="$WORKING_DIR/pipeline_scripts/create_frames_real.py"
-trim_frames="$WORKING_DIR/pipeline_scripts/trim_frames.py"
+fastqMatches="$WORKING_DIR/src/data_preparation/pipeline_scripts/FastqMatches.py"
+fastq_ORF="$WORKING_DIR/src/data_preparation/pipeline_scripts/FastqORF.py"
+create_frames="$WORKING_DIR/src/data_preparation/pipeline_scripts/create_frames_real.py"
+trim_frames="$WORKING_DIR/src/data_preparation/pipeline_scripts/trim_frames.py"
 max_dirs=35000 # max 36757
 
 

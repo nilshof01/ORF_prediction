@@ -113,5 +113,26 @@ def create_chuncks(train_data, results_train, val_data, val_results, channels, n
     safe_subsets_temp(subsets_X,subsets_Y, par_dir, "val")
     print("size of val loader "+ str(X_val.size())+str(Y_val.size()))
     # Just checking you have as many labels as inputs
+
+file_name=sys.argv[1]
+data_folder=sys.argv[2]
+base_dir_save=sys.argv[3]
+train_seq_no=int(sys.argv[4])
+val_seq_no=int(sys.argv[5])
+test_seq_no=int(sys.argv[6])
+limit_train_orgs=int(sys.argv[7])
+limit_val_orgs=int(sys.argv[8])
+limit_test_orgs=int(sys.argv[9])
+sequence_max_length=int(sys.argv[10])
+
+
+
+train_data=sys.argv[1]
+results_train=sys.argv[2]
+val_data=sys.argv[3]
+val_results=sys.argv[4]
+num_subset=sys.argv[5]
+
+create_chuncks(train_data, results_train, val_data, val_results, 4, num_subset)
     
     

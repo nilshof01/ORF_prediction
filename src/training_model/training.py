@@ -1,13 +1,13 @@
-from training_model.training_funcs import training
+from .training_funcs import training
 import torch
 import numpy as np
 import torch
 from torch import nn
 import torch.optim as optim
 #from cnn_model_diff_act_func import TheOneAnd
-from save_training_results import log_training_info
+from .save_training_results import log_training_info
 #from models.cnn_model import TheOneAndOnly
-from models.small_cnn import TheOneAndOnly
+from ..models.small_cnn import TheOneAndOnly
 
 import torch.nn.parallel
 import torch.distributed as dist
