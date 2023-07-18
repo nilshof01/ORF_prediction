@@ -3,7 +3,7 @@
 ### -- specify queue -- 
 #BSUB -q hpc
 ### -- set the job Name -- 
-#BSUB -J middam
+#BSUB -J 39nt_8000frag_2000orgs__
 ### -- ask for number of cores (default: 1) -- 
 #BSUB -n 1
 ### -- specify that the cores must be on the same host -- 
@@ -24,8 +24,8 @@
 #BSUB -N 
 ### -- Specify the output and error file. %J is the job-id -- 
 ### -- -o and -e mean append, -oo and -eo mean overwrite -- 
-#BSUB -o job_output/middam.out 
-#BSUB -e job_output/middam.err 
+#BSUB -o job_output/39nt_8000frag_2000orgs__.out 
+#BSUB -e job_output/39nt_8000frag_2000orgs__.err 
 
 
 
@@ -37,10 +37,10 @@ module load numpy/1.18.1-python-3.8.1-openblas-0.3.7
 module load pandas/1.0.3-python-3.8.1
 
 
-train_data="/work3/s220672/ORF_prediction/processed/8000frag_2000orgs_30nt_middam/one_hot_blocks_all_8000frag_2000orgs_30nt_middam.npy.gz"
-results_train="/work3/s220672/ORF_prediction/processed/8000frag_2000orgs_30nt_middam/results_all_8000frag_2000orgs_30nt_middam.npy.gz"
-val_data="/work3/s220672/ORF_prediction/processed/8000frag_2000orgs_30nt_middam/one_hot_blocks_all_val_8000frag_2000orgs_30nt_middam.npy.gz"
-val_results="/work3/s220672/ORF_prediction/processed/8000frag_2000orgs_30nt_middam/results_all_val_8000frag_2000orgs_30nt_middam.npy.gz"
+train_data="/work3/s220672/ORF_prediction/processed/8000frag_2000orgs_39nt/one_hot_blocks_all_8000frag_2000orgs_39nt.npy.gz"
+results_train="/work3/s220672/ORF_prediction/processed/8000frag_2000orgs_39nt/results_all_8000frag_2000orgs_39nt.npy.gz"
+val_data="/work3/s220672/ORF_prediction/processed/8000frag_2000orgs_39nt/one_hot_blocks_all_val_8000frag_2000orgs_39nt.npy.gz"
+val_results="/work3/s220672/ORF_prediction/processed/8000frag_2000orgs_39nt/results_all_val_8000frag_2000orgs_39nt.npy.gz"
 num_subset=20
 
 

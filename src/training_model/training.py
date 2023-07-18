@@ -16,13 +16,13 @@ import os
 
 
 test_model = False
-save_model = True
+save_model = False
 save_path_model = "/zhome/20/8/175218/orf_prediction/models"
 base_dir = "/work3/s220672/ORF_prediction"
-train_dir = "/work3/s220672/ORF_prediction/processed/8000frag_2000orgs_30nt"
+train_dir = "/work3/s220672/ORF_prediction/processed/8000frag_2000orgs_30nt_highdam"
 batch_size = 65
 channels = 4 # a network with channel 1 showed far less good results: maybe because the numbers do not equalize the nucleotides which is problematic in kernel operations
-training_name = "nodam_30nt"
+training_name = "highdam_eraser_30nt"
 limit = 6*700*5000
 LEARNING_RATE = 0.000001 # before 0.00001
 wDecay = 0.00001 # 0.005 could lead to too high regularization bc i could see that the model didnt not learn or was not flexible enough. the validation accuracies were about 10 % lower than training but a further factor to consider is that i didnt use dropout and my network was quiet big

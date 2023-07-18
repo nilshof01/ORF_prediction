@@ -18,10 +18,10 @@ class TheOneAndOnly(nn.Module):
                       padding_mode="zeros"
                       ),
       
-            #EraseColumns(),
+            EraseColumns(),
             nn.BatchNorm2d(last_channels_conv[0]),
             nn.ReLU(),
-            nn.Dropout2d(0.2),
+           # nn.Dropout2d(0.2),
         #    nn.MaxPool2d(kernel_size = (1, 3),
         #                 stride = 1,
         #                 padding = (0, 1))

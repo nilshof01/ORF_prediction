@@ -3,7 +3,7 @@
 ### –- specify queue --
 #BSUB -q gpua100
 ### -- set the job Name --
-#BSUB -J nodam_30nt
+#BSUB -J highdam_eraser_30nt
 ### -- ask for number of cores (default: 1) --
 #BSUB -n 1
 ### -- Select the resources: 1 gpu in exclusive process mode --
@@ -22,8 +22,8 @@
 #BSUB -N
 ### -- Specify the output and error file. %J is the job-id --
 ### -- -o and -e mean append, -oo and -eo mean overwrite --
-#BSUB -o job_output/nodam_30nt.out
-#BSUB -e job_output/nodam_30nt.err
+#BSUB -o job_output/highdam_eraser_30nt.out
+#BSUB -e job_output/highdam_eraser_30nt.err
 # -- end of LSF options --
 
 #module load python3/3.6.2

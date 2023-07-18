@@ -54,6 +54,7 @@ def training(Net, optimizer, epochs, base_dir,batch_size, train_dir, training_na
     validation_filenames = glob.glob(os.path.join(train_dir,  "*val.pt.gz"))
     print(len(validation_filenames))
     assert len(validation_filenames) > 0, "No validation files found."
+    save_path = save_path + "/" + training_name + ".pth"
     max_ram_usage, position = check_max_ram(max_ram_usage, 1)
     for e in range(epochs):
         train_loss = []
@@ -194,11 +195,11 @@ def training(Net, optimizer, epochs, base_dir,batch_size, train_dir, training_na
             print(
                 f'Epoch {e + 1} \t\t Train Precision: {np.mean(np.array(train_precision_batches))} \t\t Validation Precision: {np.mean(np.array(valid_precision_batches))}')
             if save_model:
-                if min_valid_loss > valid_loss:
-                    print(f'Validation Loss Decreased({min_valid_loss:.6f}--->{valid_loss:.6f}) \t Saving The Model')
-                    min_valid_loss = valid_loss
+                if min_valid_loss > valid_loss_mean:
+                    print("Saving model")
+                    min_valid_loss = valid_loss_mean
                 # Saving State Dict
-                    save_path = save_path + "/" + training_name + ".pth"
+                    
                     torch.save(Net.state_dict(), save_path)
 
         #model = torch.load("/zhome/20/8/175218/saved_model.pth")
