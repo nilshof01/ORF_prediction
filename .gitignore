@@ -1,6 +1,6 @@
 processed/*
 job_output/*
 __pycache__/*
-*.txt
 *.out 
 *.err
+src/
