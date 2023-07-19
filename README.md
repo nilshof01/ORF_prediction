@@ -3,11 +3,11 @@ This repository contains the model and its weights to predict the open reading f
 
 ## Use simsalabim
 The tool depends on scripts and weights in this repository. Thus, you should first clone the repository to your working directory with:
-</b>
+<br>
 ```git clone https://github.com/nilshof01/ORF_prediction.git```
-</b>
+<br>
 After you have cloned the repository you can run the tool. Simsalabim will output two fasta files. One ends with corr_ORFS and contains only the predicted ORFs considering the threshold (if given). The second fasta file ends with _discORFS and contains the discarded sequences which were either filtered because they are not above the given sequence length threshold or the probability of a correct prediction is below the corresponding threshold. The thresholds and input files are required or optional and given below.
-</b>
+</>
 #### Inputs 
 - `--fastq_file`: Required. The filepath to the fastq file from which you want to predict the open reading frame.
 - `--precision_thresh`: Optional. The threshold for the minimum certainty of the model to accept an open reading frame. Input type is a float in range  0 < x < 1 Default is 0.01. Thus, always the frame with the highest probability will be chosen as the correct ORF. In this mode only the reads with the sequence length < threshold_sequence_length will be discarded and saved in _discORFs.
