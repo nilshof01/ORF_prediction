@@ -17,8 +17,10 @@ After you have cloned the repository you can run the tool. Simsalabim will outpu
 <br>
 You can call the tool with:
 <br>
+
 ```python -m ORF_prediction.simsalabim --fastq_file "path_to_my_fastq_file" --precision_thresh 0.6 --threshold_sequence_length 32```
 <br>
+
 ## Generate data and train model
 
 ### Data Preparation
