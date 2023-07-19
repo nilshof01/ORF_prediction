@@ -6,7 +6,7 @@ The tool depends on scripts and model weights in this repository. Thus, you shou
 <br>
 ```git clone https://github.com/nilshof01/ORF_prediction.git```
 <br>
-````pip install -r requirements.txt```
+```pip install -r requirements.txt```
 <br>
 After you have cloned the repository you can run the tool. Simsalabim will output two fasta files. One ends with corr_ORFS and contains only the predicted ORFs considering the threshold (if given). The second fasta file ends with _discORFS and contains the discarded sequences which were either filtered because they are not above the given sequence length threshold or the probability of a correct prediction is below the corresponding threshold. The thresholds and input files are required or optional and given below.
 <br>
