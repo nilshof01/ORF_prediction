@@ -3,13 +3,13 @@
 ### –- specify queue --
 #BSUB -q gpua100
 ### -- set the job Name --
-#BSUB -J highdam_eraser_30nt
+#BSUB -J highdam_30nt
 ### -- ask for number of cores (default: 1) --
 #BSUB -n 1
 ### -- Select the resources: 1 gpu in exclusive process mode --
-#BSUB -gpu "num=1:mode=exclusive_process"
+#BSUB -gpu "num=2:mode=exclusive_process"
 ### -- set walltime limit: hh:mm --  maximum 24 hours for GPU-queues right now
-#BSUB -W 20:00
+#BSUB -W 23:00
 # request 5GB of system-memory
 #BSUB -R "rusage[mem=55GB]"
 ### -- set the email address --
@@ -22,8 +22,8 @@
 #BSUB -N
 ### -- Specify the output and error file. %J is the job-id --
 ### -- -o and -e mean append, -oo and -eo mean overwrite --
-#BSUB -o job_output/highdam_eraser_30nt.out
-#BSUB -e job_output/highdam_eraser_30nt.err
+#BSUB -o job_output/highdam_30nt.out
+#BSUB -e job_output/highdam_30nt.err
 # -- end of LSF options --
 
 #module load python3/3.6.2

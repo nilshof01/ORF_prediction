@@ -1,6 +1,14 @@
-## General Purpose of this repository
-This project contains all script to prepare the data and train on this, including the model and training script to predict the Open reading frame in ancient DNA samples from Exons and without additional damage.
+# General Purpose of this repository
+This repository contains the model and its weights to predict the open reading frame in bacterial exon DNA samples with varying degrees of damage. If you solely want to use the tool, you only need to follow the instruction under "Use simsalabim". If you want to train your own model or reproduce the results, then follow the instructions under  "Generate data and train model".
 
+## Use simsalabim
+The tool depends on scripts and weights in this repository. Thus you should first clone the repository to your working directory with:
+</b>
+```git clone https://github.com/nilshof01/ORF_prediction.git```
+</b>
+
+
+## Generate data and train model
 ### Data Preparation
 The data for the training of the models is simulated using tools such as Gargammel, seqkit, leeHom and art_illumina to create reads from next generation sequencing. The script generate_reads.sh in data_preparation can be used to generate these where the read length and the number of fragments can be defined. Further the directory containing the genomes of the organisms (from ncbi) should be given. Additionally, the number of organisms from which the fragments should be generated can be given by defining max_dirs. The script generate_reads outputs for each genome one csv which can be used in furter processing steps. 
 </b>
