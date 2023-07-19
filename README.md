@@ -2,9 +2,11 @@
 This repository contains the model and its weights to predict the open reading frame in bacterial exon DNA samples with varying degrees of damage. If you solely want to use the tool, you only need to follow the instruction under "Use simsalabim". If you want to train your own model or reproduce the results, then follow the instructions under  "Generate data and train model".
 
 ## Use simsalabim
-The tool depends on scripts and weights in this repository. Thus, you should first clone the repository to your working directory with:
+The tool depends on scripts and model weights in this repository. Thus, you should first clone the repository to your working directory and install the dependencies with:
 <br>
 ```git clone https://github.com/nilshof01/ORF_prediction.git```
+<br>
+````pip install -r requirements.txt```
 <br>
 After you have cloned the repository you can run the tool. Simsalabim will output two fasta files. One ends with corr_ORFS and contains only the predicted ORFs considering the threshold (if given). The second fasta file ends with _discORFS and contains the discarded sequences which were either filtered because they are not above the given sequence length threshold or the probability of a correct prediction is below the corresponding threshold. The thresholds and input files are required or optional and given below.
 <br>
