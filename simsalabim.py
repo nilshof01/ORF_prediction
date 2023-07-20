@@ -7,6 +7,19 @@ from Bio.Seq import Seq
 import subprocess
 import sys
 import argparse
+import gzip
+import zipfile
+
+def get_filename_without_ext(full_path):
+    file_name_with_extension = os.path.basename(full_path)
+    file_name, file_extension = os.path.splitext(file_name_with_extension)
+    is_zipped = False
+    # If the file was a .zip file, remove the .zip extension
+    if file_extension in [".gz", ".zip"]:
+        is_zipped = True
+        file_name, file_extension_2 = os.path.splitext(file_name)
+
+    return file_name, is_zipped, file_extension
 
 def one_hot_encode(seq):
     mapping = {'A': 0, 'C': 1, 'G': 2, 'T': 3}  # Mapping of nucleotides to integers
@@ -43,15 +56,48 @@ def find_orfs(sequence, chosen_length):
 
     return orfs_seq, orfs_tensor
 
+
+def loop_fastq(handle, threshold_seq_length,precision_thresh, model):
+    predicted_sequences = []
+    discarded_sequences = []
+    input_length_model = threshold_seq_length - 2
+    for record in SeqIO.parse(handle, "fastq"):
+        # Access the sequence and quality scores
+        sequence = record.seq
+        id_seq = record.id
+        if len(record.seq) > threshold_seq_length:
+            sequence = sequence[:threshold_seq_length]
+            orfs_seq, orfs_tensor = find_orfs(sequence, input_length_model)
+            model_output = model(orfs_tensor)
+            index_correct = model_output.argmax().item()
+            max_item = model_output.max()
+            if max_item > precision_thresh:
+                pred_seq = orfs_seq[index_correct]
+                predicted_record = SeqRecord(Seq(pred_seq),
+                                             id=id_seq,  # use the original sequence's ID
+                                             )
+                predicted_sequences.append(predicted_record)
+            else:
+                discarded_seq = SeqRecord(sequence,
+                                          id=id_seq)
+                discarded_sequences.append(discarded_seq)
+        else:
+            discarded_seq = SeqRecord(sequence,
+                                      id=id_seq)
+            discarded_sequences.append(discarded_seq)
+    return predicted_sequences, discarded_sequences
+
+
 def prediction(fastq_file_path,precision_thresh, damage, threshold_seq_length, save_dir):
+    name, is_zipped, file_extension = get_filename_without_ext(fastq_file_path)
+    assert file_extension in [".gz", ".fastq", ".zip"], "Please ensure that your input file has one of the following endings: .fastq, .zip, .gz "
     damage_list = ["nodam", "middam", "highdam"]
     possible_seq_length = [32, 35, 38, 41]
     dir_path = os.path.dirname(os.path.abspath(__file__))
     assert os.path.isfile(fastq_file_path), "The give file path does not exist"
     assert isinstance(precision_thresh, float), "Please enter your precision threshold as float"
     assert damage in damage_list, "Please enter for the degree of damage nodam, middam or highdam"
-    assert threshold_seq_length in possible_seq_length, "Please enter a valid threshold for the sequences. So far these are: "  + str(possible_seq_length
-                                                                                                                                      )
+    assert threshold_seq_length in possible_seq_length, "Please enter a valid threshold for the sequences. So far these are: "  + str(possible_seq_length                                                                                                                          )
     assert os.path.isdir(save_dir), "Please enter a valid directory to save the output files"
     trained_seq_length = threshold_seq_length - 2
     weights_path = os.path.join(dir_path, "model_weights", f"{damage}_{trained_seq_length}nt.pth")
@@ -61,37 +107,25 @@ def prediction(fastq_file_path,precision_thresh, damage, threshold_seq_length, s
                                     map_location=torch.device('cpu'))
     pretrained_weights = {k.replace("module.", ""): v for k, v in pretrained_weights.items()}
     model.eval()
-    predicted_sequences = []
-    discarded_sequences = []
-    input_length_model = threshold_seq_length - 2
-    with open(fastq_file_path, "r") as handle:
-        # Iterate over each sequence record in the file
-        for record in SeqIO.parse(handle, "fastq"):
-            # Access the sequence and quality scores
-            if len(record.seq) > threshold_seq_length:
-                sequence = record.seq
-                sequence = sequence[:threshold_seq_length]
-                id_seq = record.id
-                orfs_seq, orfs_tensor = find_orfs(sequence, input_length_model)
-                model_output = model(orfs_tensor)
-                index_correct = model_output.argmax().item()
-                max_item = model_output.max()
-                if max_item > precision_thresh:
-                    pred_seq = orfs_seq[index_correct]
-                    predicted_record = SeqRecord(Seq(pred_seq),
-                                                 id=id_seq,  # use the original sequence's ID
-                                                 )
-                    predicted_sequences.append(predicted_record)
-                else:
-                    discarded_seq = SeqRecord(sequence,
-                                              id=id_seq)
-                    discarded_sequences.append(discarded_seq)
-            else:
-                discarded_seq = SeqRecord(sequence,
-                                          id=id_seq)
-                discarded_sequences.append(discarded_seq)
-    base_fastq = os.path.basename(fastq_file_path)
-    name, ext = os.path.splitext(base_fastq)  # Split the extension
+
+    if file_extension == ".gz":
+        with gzip.open(fastq_file_path, "rt") as handle:
+            predicted_sequences, discarded_sequences = loop_fastq(handle, threshold_seq_length,precision_thresh, model)
+
+    elif file_extension == ".zip":
+        with zipfile.ZipFile(fastq_file_path, 'r') as zip_ref:
+            zip_ref.extractall()
+
+            # Assuming there's only one file in the .zip, and we know it's a .fastq
+            fastq_file_name = zip_ref.namelist()[0]  # Gets the first (and only) filename in the .zip
+
+            with open(fastq_file_name, "r") as handle:
+                predicted_sequences, discarded_sequences = loop_fastq(handle, threshold_seq_length,precision_thresh, model)
+
+    else:
+        with open(fastq_file_path, "r") as handle:
+            predicted_sequences, discarded_sequences = loop_fastq(handle, threshold_seq_length,precision_thres, model)
+
     if not save_dir:
         corr_orfs_path = name + "_corrORFS"
         disc_orfs_path = name + "_discORFS"
