@@ -4,3 +4,4 @@ __pycache__/*
 *.out 
 *.err
 src/
+__pycache__

@@ -6,6 +6,7 @@ from Bio.SeqRecord import SeqRecord
 from Bio.Seq import Seq
 import subprocess
 import sys
+import argparse
 
 def one_hot_encode(seq):
     mapping = {'A': 0, 'C': 1, 'G': 2, 'T': 3}  # Mapping of nucleotides to integers
@@ -37,13 +38,15 @@ def find_orfs(sequence, chosen_length):
 
     orfs_tensor = torch.stack(orfs, dim=0)  # Stack the ORFs along a new dimension
     orfs_tensor = orfs_tensor.unsqueeze(0)  # Add an extra dimension at the beginning for batch size
-    orfs_tensor = orfs_tensor.permute(0, 3, 1, 2)  # Permute the dimensions to get to the required size
+    orfs_tensor = orfs_tensor.permute(0, 3, 2, 1)  # Permute the dimensions to get to the required size
+    orfs_tensor = orfs_tensor.float()
 
     return orfs_seq, orfs_tensor
 
 def prediction(fastq_file_path,precision_thresh, damage, threshold_seq_length, save_dir):
     damage_list = ["nodam", "middam", "highdam"]
     possible_seq_length = [32, 35, 38, 41]
+    dir_path = os.path.dirname(os.path.abspath(__file__))
     assert os.path.isfile(fastq_file_path), "The give file path does not exist"
     assert isinstance(precision_thresh, float), "Please enter your precision threshold as float"
     assert damage in damage_list, "Please enter for the degree of damage nodam, middam or highdam"
@@ -51,23 +54,25 @@ def prediction(fastq_file_path,precision_thresh, damage, threshold_seq_length, s
                                                                                                                                       )
     assert os.path.isdir(save_dir), "Please enter a valid directory to save the output files"
     trained_seq_length = threshold_seq_length - 2
-    weights_path = os.path.join("~", "src", "model_weights", f"{damage}_{trained_seq_length}nt.pth")
+    weights_path = os.path.join(dir_path, "model_weights", f"{damage}_{trained_seq_length}nt.pth")
     model = TheOneAndOnly(channels=4,
                           test=False)
     pretrained_weights = torch.load(weights_path,
                                     map_location=torch.device('cpu'))
     pretrained_weights = {k.replace("module.", ""): v for k, v in pretrained_weights.items()}
+    model.eval()
     predicted_sequences = []
     discarded_sequences = []
+    input_length_model = threshold_seq_length - 2
     with open(fastq_file_path, "r") as handle:
         # Iterate over each sequence record in the file
         for record in SeqIO.parse(handle, "fastq"):
             # Access the sequence and quality scores
-            if len(record.seq) >= threshold_seq_length:
+            if len(record.seq) > threshold_seq_length:
                 sequence = record.seq
                 sequence = sequence[:threshold_seq_length]
                 id_seq = record.id
-                orfs_seq, orfs_tensor = find_orfs(sequence, 30)
+                orfs_seq, orfs_tensor = find_orfs(sequence, input_length_model)
                 model_output = model(orfs_tensor)
                 index_correct = model_output.argmax().item()
                 max_item = model_output.max()
@@ -99,12 +104,27 @@ def prediction(fastq_file_path,precision_thresh, damage, threshold_seq_length, s
 
     with open(disc_orfs_path, "w") as output_handle:
         SeqIO.write(discarded_sequences, output_handle, "fasta")
-    subprocess.run(['gzip', "f", corr_orfs_path])
-    subprocess.run(['gzip', "f", disc_orfs_path])
+  #  subprocess.run(['gzip', "f", corr_orfs_path])
+   # subprocess.run(['gzip', "f", disc_orfs_path])
 
-fastq_file_path=sys.argv[1]
-precision_thresh=float(sys.argv[2])
-damage=sys.argv[3]
-threshold_seq_length=int(sys.argv[4])
-save_dir=sys.argv[5]
+
+
+
+
+parser = argparse.ArgumentParser(description='Predictor')
+
+# Add arguments to the parser
+parser.add_argument('fastq_file_path',type = str, help='Path to the fastq file')
+parser.add_argument('--precision_thresh', type=float, default=0.01, help="The threshold for the minimum certainty of the model to accept an open reading frame. Input type is a float in range 0 < x < 1 Default is 0.01.")
+parser.add_argument('--damage', default='nodam', help='Degree of damage')
+parser.add_argument('--threshold_seq_length', type=int, default=32, help=' The minimum sequence length as input for the model. All reads with a lower length will filtered and saved in _discORFs.')
+parser.add_argument('--save_dir', default=os.getcwd(), help='Directory to save output files')
+args = parser.parse_args()
+
+fastq_file_path = args.fastq_file_path
+precision_thresh = args.precision_thresh
+damage = args.damage
+threshold_seq_length = args.threshold_seq_length
+save_dir = args.save_dir
+
 prediction(fastq_file_path, precision_thresh, damage, threshold_seq_length, save_dir)
