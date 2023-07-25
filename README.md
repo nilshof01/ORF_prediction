@@ -70,3 +70,12 @@ The script will output the number of subsets for each file in the folder where t
 
 ### Training
 The model is fairly big and if it is trained on more than 1000 organisms with more than 1000 fragments per organism it should be trained on high performance graphic nodes.  Tesla A100 PCIE 80 GB on an LSF cluster was used to train the model and for that the modules are defined in requirements.txt. Probably, these will differ for different architectures so they should be adjusted if other graphic cards are used. jobscript_big.sh was used to submit the jobs which is based on the script src/training_model/training.py. There, one can define all relevant parameters for the training such as optimizer, batch size, data directory etc. 
+
+## References
+leeHom: adaptor trimming and merging for Illumina sequencing reads
+Gabriel Renaud, Udo Stenzel and Janet Kelso
+Nucleic Acids Research 2014 Oct;42(18):e141. doi: 10.1093/nar/gku699.
+<br>
+Renaud, G., Hanghoej, K., Willerslev, E. & Orlando, L. (2016). gargammel: a sequence simulator for ancient DNA Bioinformatics, btw670
+<br>
+Huang W, Li L, Myers JR, Marth GT. ART: a next-generation sequencing read simulator. Bioinformatics. 2012 Feb 15;28(4):593-4. doi: 10.1093/bioinformatics/btr708. Epub 2011 Dec 23. PMID: 22199392; PMCID: PMC3278762.
