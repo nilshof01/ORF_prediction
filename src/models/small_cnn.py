@@ -5,7 +5,7 @@ from .line_eraser import EraseColumns
 
 
 class TheOneAndOnly(nn.Module):
-    def __init__(self,channels,test,   sequence_length = 30, first_channels_conv = [64, 128, 256, 180], last_channels_conv = [64, 128, 256,120, 240]): # horizontal kernel with horizontal stride
+    def __init__(self,channels,test,   sequence_length = 30, first_channels_conv = [64, 128, 256, 180], last_channels_conv = [64, 128, 256, 120, 240]): # horizontal kernel with horizontal stride
         super(TheOneAndOnly, self).__init__()
 
         self.test_model = test
@@ -87,7 +87,7 @@ class TheOneAndOnly(nn.Module):
         self.dense_layer2 = nn.Sequential(
             nn.Linear(1000,100),
             nn.BatchNorm1d(100),
-            nn.ReLU()
+            nn.ReLU(),
         )
 
         self.dense_layer3 = nn.Sequential(
