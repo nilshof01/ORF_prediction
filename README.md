@@ -25,6 +25,11 @@ You can call the tool with:
 
 ## Generate data and train model
 
+### Clone branch with training scripts
+```bash
+git clone -b chuncks https://github.com/nilshof01/ORF_prediction.git
+```
+
 ### Data Preparation
 
 The data for the training of the models is simulated using tools such as Gargammel, seqkit, leeHom and art_illumina to create reads from next generation sequencing. The script generate_reads.sh in data_preparation can be used to generate these where the read length and the number of fragments can be defined. Further the directory containing the genomes of the organisms (from ncbi) should be given. Additionally, the number of organisms from which the fragments should be generated can be given by defining max_dirs. The script generate_reads outputs for each genome one csv which can be used in furter processing steps. 
